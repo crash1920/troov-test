@@ -5,10 +5,15 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
+
+// Middleware pour parser le JSON
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
+
+//routes
 const authRoutes = require('./routes/authRoutes');
 app.use('/api/auth', authRoutes);
-app.use(bodyParser.json());
-app.use(cors());
 
 // Connexion à MongoDB Atlas
 mongoose.connect(process.env.MONGO_URI, {
