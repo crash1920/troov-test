@@ -15,6 +15,9 @@ app.use(cors());
 const authRoutes = require('./routes/authRoutes');
 app.use('/api/auth', authRoutes);
 
+const objectRoutes = require('./routes/objectRoutes');
+app.use('/api/objects', objectRoutes);
+
 // Connexion à MongoDB Atlas
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
