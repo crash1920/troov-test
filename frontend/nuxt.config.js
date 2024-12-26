@@ -1,41 +1,73 @@
-export default {
-  // Global page headers: https://go.nuxtjs.dev/config-head
-  head: {
-    title: 'frontend',
-    htmlAttrs: {
-      lang: 'en',
-    },
-    meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
-      { name: 'format-detection', content: 'telephone=no' },
-    ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+import { defineNuxtConfig } from 'nuxt/config';
+import consola from 'consola';
+
+export default defineNuxtConfig({
+  // 🌐 Configuration globale du header HTML
+  app: {
+    head: {
+      title: 'Troov App',
+      htmlAttrs: {
+        lang: 'en',
+        class: 'dark',
+
+      },
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { hid: 'description', name: 'description', content: 'Troov App for managing objects' },
+        { name: 'format-detection', content: 'telephone=no' },
+      ],
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      ],
+    }
   },
 
-  // Global CSS: https://go.nuxtjs.dev/config-css
-  css: [],
-
-  // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
-
-  // Auto import components: https://go.nuxtjs.dev/config-components
+  // 📂 Import automatique des composants
   components: true,
 
-  // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
+  // 🎨 Global CSS (intégration de Tailwind CSS)
+  css: ['@/assets/css/tailwind.css'],
+
+  // 📦 Modules de build (ESLint, Stylelint, etc.)
   buildModules: [
-    // https://go.nuxtjs.dev/eslint
-    '@nuxtjs/eslint-module',
-    // https://go.nuxtjs.dev/stylelint
-    '@nuxtjs/stylelint-module',
-    // https://go.nuxtjs.dev/tailwindcss
     '@nuxtjs/tailwindcss',
   ],
 
-  // Modules: https://go.nuxtjs.dev/config-modules
-  modules: [],
+  // ⚙️ Modules Nuxt (sans axios, avec Tailwind)
+  modules: [
+    '@nuxtjs/tailwindcss'
+  ],
 
-  // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {},
-}
+  // 🔗 Configuration pour fetch (remplaçant axios)
+  runtimeConfig: {
+    public: {
+      apiBase: 'http://localhost:5000/api'  // L'URL de ton API backend
+    }
+  },
+
+  // 🚀 Router – Redirection par défaut vers /login
+  router: {
+    extendRoutes(routes, resolve) {
+      routes.push({
+        name: 'login',
+        path: '/login',
+        component: resolve(__dirname, 'pages/login.vue')  // Chemin vers la page login
+      });
+    }
+  },
+
+  // 🛠️ Hooks pour fixer des erreurs de consola
+  hooks: {
+    'builder:prepared'() {
+      consola.wrapConsole();
+    }
+  },
+
+  // ⚙️ Configuration de build
+  build: {
+    transpile: ['ofetch']  // Permet la transpilation de ofetch si nécessaire
+  },
+
+  compatibilityDate: '2024-12-25'
+});
