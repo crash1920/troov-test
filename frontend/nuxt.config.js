@@ -36,7 +36,7 @@ export default defineNuxtConfig({
 
   // ⚙️ Modules Nuxt (sans axios, avec Tailwind)
   modules: [
-    '@nuxtjs/tailwindcss'
+    '@nuxtjs/tailwindcss','@pinia/nuxt'
   ],
 
   // 🔗 Configuration pour fetch (remplaçant axios)
