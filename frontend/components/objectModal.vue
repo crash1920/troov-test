@@ -1,90 +1,63 @@
 <template>
-    <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div class="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-lg">
-        <h2 class="text-2xl font-bold mb-4 text-white">
-          {{ object ? 'Modifier l\'objet' : 'Ajouter un Objet' }}
-        </h2>
-  
-        <form @submit.prevent="submitForm">
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-400">Nom</label>
-            <input
-              v-model="form.name"
-              type="text"
-              required
-              class="mt-1 block w-full p-2 border rounded-lg bg-gray-700 text-white"
-            />
-          </div>
-  
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-400">Description</label>
-            <textarea
-              v-model="form.description"
-              required
-              class="mt-1 block w-full p-2 border rounded-lg bg-gray-700 text-white"
-            ></textarea>
-          </div>
-  
-          <div class="flex justify-end space-x-4">
-            <button
-              type="button"
-              @click="$emit('close')"
-              class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded"
-            >
-              Annuler
-            </button>
-            <button
-              type="submit"
-              class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded"
-            >
-              Enregistrer
-            </button>
-          </div>
-        </form>
-      </div>
+  <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-lg">
+      <h2 class="text-2xl font-bold mb-4">
+        {{ object ? 'Modifier' : 'Ajouter' }} un Objet
+      </h2>
+      <form @submit.prevent="saveObject">
+        <div class="mb-4">
+          <label class="block mb-2">Nom</label>
+          <input v-model="objectData.name" required class="w-full p-3 bg-gray-700 rounded" />
+        </div>
+        <div class="mb-4">
+          <label class="block mb-2">Description</label>
+          <textarea v-model="objectData.description" class="w-full p-3 bg-gray-700 rounded"></textarea>
+        </div>
+        <div class="mb-4">
+          <label class="block mb-2">URL de l'image</label>
+          <input v-model="objectData.imageUrl" type="text" class="w-full p-3 bg-gray-700 rounded" />
+        </div>
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-lg">
+          Enregistrer
+        </button>
+      </form>
     </div>
-  </template>
-  
-  <script setup>
-  import { ref, watch } from 'vue';
-  import { useRuntimeConfig } from 'nuxt/app';
-  
-  const props = defineProps(['object']);
-  const emit = defineEmits(['close', 'refresh']);
-  const form = ref({ name: '', description: '' });
-  const config = useRuntimeConfig();
-  
-  watch(
-    () => props.object,
-    (newVal) => {
-      if (newVal) {
-        form.value = { ...newVal };
-      } else {
-        form.value = { name: '', description: '' };
-      }
-    },
-    { immediate: true }
-  );
-  
-  async function submitForm() {
-    const token = localStorage.getItem('token');
-  
-    const method = props.object ? 'PUT' : 'POST';
-    const url = props.object
-      ? `${config.public.apiBase}/objects/${props.object._id}`
-      : `${config.public.apiBase}/objects`;
-  
+  </div>
+</template>
+
+<script setup>
+import { ref, defineProps, defineEmits } from 'vue';
+import { useRuntimeConfig } from 'nuxt/app';
+
+const props = defineProps(['object']);
+const emit = defineEmits(['close', 'refresh']);
+const config = useRuntimeConfig();
+
+const objectData = ref({
+  name: '',
+  description: '',
+  imageUrl: '',
+  ...props.object
+});
+
+async function saveObject() {
+  const token = localStorage.getItem('token');
+  const method = objectData.value._id ? 'PUT' : 'POST';
+  const url = `${config.public.apiBase}/objects${objectData.value._id ? '/' + objectData.value._id : ''}`;
+
+  try {
     await fetch(url, {
       method,
       headers: {
         'Content-Type': 'application/json',
-        'x-auth-token': token,
+        'x-auth-token': token
       },
-      body: JSON.stringify(form.value),
+      body: JSON.stringify(objectData.value)
     });
-  
-    emit('close');
     emit('refresh');
+    emit('close');
+  } catch (error) {
+    console.error('Erreur lors de l\'enregistrement de l\'objet', error);
   }
-  </script>
-  
+}
+</script>

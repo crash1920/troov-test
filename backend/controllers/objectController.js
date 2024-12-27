@@ -3,10 +3,11 @@ const ObjectModel = require('../models/object');
 // Ajouter un objet
 exports.addObject = async (req, res) => {
   try {
-    const { name, description } = req.body;
+    const { name, description,imageUrl } = req.body;
     const newObject = new ObjectModel({
       name,
       description,
+      imageUrl,
       user: req.user.id, // ID de l'utilisateur connecté
     });
     const savedObject = await newObject.save();
