@@ -36,7 +36,11 @@
                 v-for="object in filteredObjects" 
                 :key="object._id" 
                 class="py-6 flex justify-between items-center bg-gray-800 px-4 rounded-lg mb-4 shadow-lg"
-              >
+              >  <img 
+            :src="object.imageUrl || '/placeholder.jpg'" 
+            alt="Objet Image" 
+            class="w-20 h-20 object-cover rounded mr-4"
+          />
                 <div>
                   <h3 class="text-xl font-semibold">{{ object.name }}</h3>
                   <p class="text-gray-400">{{ object.description }}</p>
