@@ -1,11 +1,8 @@
 module.exports = {
-  customSyntax: 'postcss-html',
-  extends: [
-    'stylelint-config-standard',
-    'stylelint-config-recommended-vue',
-    'stylelint-config-prettier',
-  ],
-  // add your custom config here
-  // https://stylelint.io/user-guide/configuration
-  rules: {},
-}
+  extends: ['stylelint-config-standard'],
+  rules: {
+    'block-no-empty': null,
+    'color-no-invalid-hex': true,
+    'declaration-block-trailing-semicolon': 'always',
+  },
+};
